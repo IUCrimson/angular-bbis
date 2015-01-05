@@ -1,0 +1,52 @@
+<div ng-app="UserApp" ng-controller="UserController">
+
+    <label>
+        First Name
+        <input ng-model="user.FirstName" />
+    </label>
+    <br />
+
+    <label>
+        Last Name
+        <input ng-model="user.LastName" />
+    </label>
+    <br />
+
+    <label>
+        Phone
+        <input ng-model="user.Phone" />
+    </label>
+    <br />
+
+    <label>
+        Title
+        <input ng-model="user.Title" />
+    </label>
+    <br />
+
+    <b>Full User Profile</b>
+    <pre>{{user | json}}</pre>
+
+</div>
+
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+<script src="//dev-alumni.indiana.edu/bbis/file/js/angular-bbis.js"></script>
+<script type="text/javascript">
+    'use strict';
+
+    angular.module('UserApp', ['bbis.api'])
+    .controller('UserController', ['$scope', 'BbisApi', function ($scope, BbisApi) {
+
+        // Service for getting User profile information.
+        var userSvc = new BbisApi.UserService();
+
+        // Model for profile.
+        $scope.user = {};
+
+        // Get logged in user's information.
+        userSvc.getProfile().then(function (profile) {
+            $scope.user = profile;
+        });
+
+    }]);
+</script>

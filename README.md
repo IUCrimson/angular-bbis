@@ -17,11 +17,9 @@ The `src` url for the `angular-bbis-services.js` file will need to be changed to
 - When initializing your application, include a reference to `bbis.api`.
 - Inject the services into your controller with `BbisApi`.
 
-```html
-    
+```html    
     <!-- Include a reference to `angular-bbis-services.js`  -->
     <script src="angular-bbis-services.js"></script>
-
 ```
 
 ```javascript
@@ -33,14 +31,12 @@ The `src` url for the `angular-bbis-services.js` file will need to be changed to
         var countrySvc = new BbisApi.CountryService();
         ...
     });
-
 ```
 
 ###CountryService###
 CountryService Provides methods for getting state and country information from the CRM using calls to the BBIS REST services.
 
 ```javascript
-
     // Getting Countries
     var countrySvc = new BbisApi.CountryService();
     countrySvc.getCountries().then(function(countries) {
@@ -51,7 +47,6 @@ CountryService Provides methods for getting state and country information from t
     countrySvc.getStates(countryId).then(function(states) {
         $scope.states = states;
     });
-
 ```
 
 ###CodeTableService###
@@ -77,15 +72,53 @@ DonationService Provides methods needed for taking donations and retrieving conf
 
 The `DonationService` requires the Part Id from an `Advanced Donation Part` to initialize.  The code can either be embedded in an `Advanced Donation Part` directly or anywhere on the same page as one so the Part Id can be selected.
 
-```javascript
+Please refer to the [Donation API Documentation](http://developer.blackbaud.com/bbis/reference/rest/#donationapi) for guidance on how to form your donation object.
 
+```javascript
+    // This is a simplified donation.
+    var donation = {
+        MerchantAccountId: '00000000-0000-0000-0000-000000000000',
+        BBSPReturnUri: window.location.href,
+        Gift: {
+            PaymentMethod: 0,
+            Designations: []
+        },
+        Donor: $scope.user
+    };
+
+    var donationSvc = new BbisApi.DonationService(
+        $('.BBDonationApiContainer').data('partid')
+    );
+    
+    // This service redirects the user to a payment URL if it is available.
+    // Otherwise the created donation object will be returned as a promise.
+    donationSvc.createDonation(donation);
 ```
 
 ###ImageService###
-ImageService Provides methods for getting information about images in the image gallery
+ImageService Provides methods for getting information about images in the image gallery.
 
 ```javascript
+    // Image service
+    var imageSvc = new BbisApi.ImageService();
+    
+    // Model to hold images.
+    $scope.images = [];
 
+    // Get images in folder 'Logos'.
+    imageSvc.getImagesByFolder('Logos').then(function(images){
+        $scope.images = images;
+    });
+
+    // Get images tagged with 'homecoming'.
+    imageSvc.getImagesByTag('homecoming').then(function(images){
+        $scope.images = images;
+    });
+
+    // Get in folder by GUID.
+    imageSvc.getImagesByFolderGUID('00000000-0000-0000-0000-000000000000').then(function(images){
+        $scope.images = images;
+    });
 ```
 
 ###QueryService###
@@ -116,12 +149,17 @@ QueryService Provides methods for retrieving query execution results from the CR
 UserService Provides methods for retrieving information about the currently logged in BBIS user from the CRM using calls to the BBIS REST services.
 
 ```javascript
+    // Service for getting User profile information.
+    var userSvc = new BbisApi.UserService();
 
+    // Get logged in user's information.
+    userSvc.getProfile().then(function (profile) {
+        $scope.user = profile;
+    });
 ```
 
 
 ##Project TODO##
-- [ ] Complete basic examples in README
-- [ ] Complete full examples in examples folder.
 - [ ] Implement Cross Domain support.
 - [ ] Decide whether or not to factor out BBIS API totally.
+- [ ] Directives?
