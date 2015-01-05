@@ -20,7 +20,7 @@ The `src` url for the `angular-bbis-services.js` file will need to be changed to
 ```html
     
     <!-- Include a reference to `angular-bbis-services.js`  -->
-    <script src="angular-bbis.js"></script>
+    <script src="angular-bbis-services.js"></script>
 
 ```
 
@@ -64,3 +64,9 @@ Basic usage:
 ###Query###
 
 ###User###
+
+##Project TODO##
+- [ ] Complete basic examples in README
+- [ ] Complete full examples in examples folder.
+- [ ] Implement Cross Domain support.
+- [ ] Decide whether or not to factor out BBIS API totally.
