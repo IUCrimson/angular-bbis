@@ -100,9 +100,7 @@
                 }
             }
 
-            return $http.get(url).then(function (result) {
-                return result.data;
-            });;
+            return $http.get(url);
         },
 
         /**
@@ -123,8 +121,8 @@
         getResultsAsObjects: function (id, columnFilter) {
             return this.getResults(id, columnFilter).then(function (results) {
                 var objects = [];
-                var fields = results.Fields;
-                var rows = results.Rows;
+                var fields = results.data.Fields;
+                var rows = results.data.Rows;
 
                 angular.forEach(rows, function (row) {
                     var obj = {};
@@ -201,9 +199,7 @@
          * </ul>
         */
         getProfile: function () {
-            return $http.get(this.baseUrl + '/User').then(function (result) {
-                return result.data;
-            });
+            return $http.get(this.baseUrl + '/User');
         },
 
         /**
@@ -216,7 +212,9 @@
          * The resulting format is suitable to be passed as the Donor object in a DonationQuery call.     
         */
         getDonorProfile: function () {
-            return this.getProfile().then(function (profile) {
+            return this.getProfile().then(function (response) {
+                var profile = response.data;
+
                 var user = {
                     Title: profile.Title,
                     FirstName: profile.FirstName,
@@ -283,9 +281,7 @@
          * </ul>
         */
         getCountries: function () {
-            return $http.get(this.baseUrl + '/Country').then(function (result) {
-                return result.data;
-            });
+            return $http.get(this.baseUrl + '/Country');
         },
 
         /**
@@ -301,9 +297,7 @@
         getStates: function (countryId) {
             var url = this.baseUrl + "/Country/" + countryId + "/State";
 
-            return $http.get(url).then(function (result) {
-                return result.data;
-            });
+            return $http.get(url);
         },
 
         /**
@@ -320,9 +314,7 @@
         getAddressCaptions: function (countryId) {
             var url = this.baseUrl + "/Country/" + countryId + "/AddressCaptions";
 
-            return $http.get(url).then(function (result) {
-                return result.data;
-            });
+            return $http.get(url);
         }
     };
 
@@ -364,9 +356,7 @@
         getEntries: function (codeTableId) {
             var url = this.baseUrl + "/CodeTable/" + codeTableId;
 
-            return $http.get(url).then(function (result) {
-                return result.data;
-            });
+            return $http.get(url);
         }
     };
 
@@ -411,9 +401,7 @@
         getImagesByFolderGUID: function (folderGUID) {
             var url = this.baseUrl + "/Images?FolderGUID=" + encodeURIComponent(folderGUID);
 
-            return $http.get(url).then(function (result) {
-                return result.data;
-            });
+            return $http.get(url);
         },
 
         /**
@@ -429,9 +417,7 @@
         getImagesByTag: function (tag) {
             var url = this.baseUrl + "/Images?Tag=" + encodeURIComponent(tag);
 
-            return $http.get(url).then(function (result) {
-                return result.data;
-            });
+            return $http.get(url);
         },
 
         /**
@@ -447,9 +433,7 @@
         getImagesByFolder: function (folderPath) {
             var url = this.baseUrl + "/Images/" + encodeURIComponent(folderPath);
 
-            return $http.get(url).then(function (result) {
-                return result.data;
-            });
+            return $http.get(url);
         }
     };
 
@@ -499,15 +483,13 @@
         createDonation: function (donation) {
             var url = this.baseUrl + '/Create';
 
-            return $http.post(url, donation).then(function (result) {
-                var donation = result.data;
-
+            return $http.post(url, donation).success(function (donation) {
                 if (donation.BBSPCheckoutUri)
                     location.href = donation.BBSPCheckoutUri;
                 else if (donation.PaymentPageUri)
                     location.href = donation.PaymentPageUri;
 
-                return result.data;
+                return donation;
             });
         },
 
@@ -519,10 +501,7 @@
         */
         getDonation: function (id) {
             var url = this.baseUrl + '/' + id;
-
-            return $http.get(url).then(function (result) {
-                return result.data;
-            });
+            return $http.get(url);
         },
 
         /**
@@ -534,10 +513,7 @@
         */
         completeBBSPDonation: function (id) {
             var url = this.baseUrl + '/' + id + '/CompleteBBSPDonation';
-
-            return $http.post(url).then(function (result) {
-                return result.data;
-            });
+            return $http.post(url);
         },
 
         /**
@@ -553,13 +529,11 @@
 
             return $http.get(url, { responseType: 'text/plain' }).then(function (result) {
                 // Has a buch of \t, \n and \" 
-                var htmlString = result.data;
-
-                return htmlString
+                return result
                     .replace(/\\n/g, '')                    // \n
                     .replace(/\\t/g, '')                    // \t
                     .replace(/\\/g, '')                     // \ in front of "s
-                    .substring(1, htmlString.length - 1);   // 1st and last "
+                    .substring(1, result.length - 1);       // 1st and last "
             });
         }
     };

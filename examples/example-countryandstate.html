@@ -29,7 +29,7 @@
 </div>
 
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
-<script src="//dev-alumni.indiana.edu/bbis/file/js/angular-bbis.js"></script>
+<script src="//dev-alumni.indiana.edu/bbis/file/js/angular-bbis-services.js"></script>
 <script type="text/javascript">
     'use strict';
 
@@ -51,13 +51,13 @@
         $scope.$watch('selectedCountry', function (newValue) {
             if (!newValue) return;
             
-            countrySvc.getStates(newValue.Id).then(function (states) {
+            countrySvc.getStates(newValue.Id).success(function (states) {
                 $scope.states = states;
             });
         });
 
         // Populate countries from the Country service.
-        countrySvc.getCountries().then(function (countries) {
+        countrySvc.getCountries().success(function (countries) {
             $scope.countries = countries;
         });
 

@@ -5,7 +5,7 @@ This repo contains Angular native implimentations of the [BBIS REST API](http://
 
 ##Notes##
 - This port does not currently include cross domain support.
-- Services are implimented as promises that return the data from a request.
+- Service methods return an $http promise.
 
 ##Examples##
 For simplicity, examples are formatted as a single file that should be suitable to put in as an `Unformatted Text` part.
@@ -39,12 +39,12 @@ CountryService Provides methods for getting state and country information from t
 ```javascript
     // Getting Countries
     var countrySvc = new BbisApi.CountryService();
-    countrySvc.getCountries().then(function(countries) {
+    countrySvc.getCountries().success(function(countries) {
         $scope.countries = countries;
     });
 
     // Getting States
-    countrySvc.getStates(countryId).then(function(states) {
+    countrySvc.getStates(countryId).success(function(states) {
         $scope.states = states;
     });
 ```
@@ -62,7 +62,7 @@ CodeTableService Provides methods for retrieving code table entries from the CRM
     $scope.selection = null;
 
     // Populate countries from the Country service.
-    codeTableSvc.getEntries(codeTableId).then(function (entries) {
+    codeTableSvc.getEntries(codeTableId).success(function (entries) {
         $scope.codeTable = entries;
     });
 ```
@@ -106,17 +106,17 @@ ImageService Provides methods for getting information about images in the image 
     $scope.images = [];
 
     // Get images in folder 'Logos'.
-    imageSvc.getImagesByFolder('Logos').then(function(images){
+    imageSvc.getImagesByFolder('Logos').success(function(images){
         $scope.images = images;
     });
 
     // Get images tagged with 'homecoming'.
-    imageSvc.getImagesByTag('homecoming').then(function(images){
+    imageSvc.getImagesByTag('homecoming').success(function(images){
         $scope.images = images;
     });
 
     // Get in folder by GUID.
-    imageSvc.getImagesByFolderGUID('00000000-0000-0000-0000-000000000000').then(function(images){
+    imageSvc.getImagesByFolderGUID('00000000-0000-0000-0000-000000000000').success(function(images){
         $scope.images = images;
     });
 ```
@@ -140,7 +140,7 @@ QueryService Provides methods for retrieving query execution results from the CR
     });
 
     // Get results as an object with Fields: [] and Rows: []
-    querySvc.getResults(queryId).then(function (results) {
+    querySvc.getResults(queryId).success(function (results) {
         $scope.queryResults = results;
     });
 ```
@@ -153,7 +153,7 @@ UserService Provides methods for retrieving information about the currently logg
     var userSvc = new BbisApi.UserService();
 
     // Get logged in user's information.
-    userSvc.getProfile().then(function (profile) {
+    userSvc.getProfile().success(function (profile) {
         $scope.user = profile;
     });
 ```

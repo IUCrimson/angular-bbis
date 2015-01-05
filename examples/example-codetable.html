@@ -15,7 +15,7 @@
 </div>
 
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
-<script src="//dev-alumni.indiana.edu/bbis/file/js/angular-bbis.js"></script>
+<script src="//dev-alumni.indiana.edu/bbis/file/js/angular-bbis-services.js"></script>
 <script type="text/javascript">
     'use strict';
 
@@ -31,7 +31,7 @@
         $scope.selection = null;
 
         // Populate countries from the Country service.
-        codeTableSvc.getEntries(codeTableId).then(function (entries) {
+        codeTableSvc.getEntries(codeTableId).success(function (entries) {
             $scope.codeTable = entries;
         });
 

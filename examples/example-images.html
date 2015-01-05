@@ -7,7 +7,7 @@
 </div>
 
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
-<script src="//dev-alumni.indiana.edu/bbis/file/js/angular-bbis.js"></script>
+<script src="//dev-alumni.indiana.edu/bbis/file/js/angular-bbis-services.js"></script>
 <script type="text/javascript">
     'use strict';
 
@@ -21,7 +21,7 @@
         $scope.images = [];
 
         // Get images in folder 'Logos'.
-        imageSvc.getImagesByFolder('Logos').then(function (images) {
+        imageSvc.getImagesByFolder('Logos').success(function (images) {
             $scope.images = images;
         });
 
