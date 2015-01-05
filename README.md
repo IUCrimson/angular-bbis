@@ -36,9 +36,8 @@ The `src` url for the `angular-bbis-services.js` file will need to be changed to
 
 ```
 
-###Country and State###
-
-Basic usage:
+###CountryService###
+CountryService Provides methods for getting state and country information from the CRM using calls to the BBIS REST services.
 
 ```javascript
 
@@ -55,15 +54,71 @@ Basic usage:
 
 ```
 
-###Code Table###
+###CodeTableService###
+CodeTableService Provides methods for retrieving code table entries from the CRM using calls to the BBIS REST services.
 
-###Donation###
+```javascript
+    // Service and ID for getting Code Table information.
+    var codeTableSvc = new BbisApi.CodeTableService();
+    var codeTableId = 'a19037c0-291a-4c8b-9595-c41b9d932a32';
 
-###Images###
+    // Models for data returned from the CodeTable service.
+    $scope.codeTable = [];
+    $scope.selection = null;
 
-###Query###
+    // Populate countries from the Country service.
+    codeTableSvc.getEntries(codeTableId).then(function (entries) {
+        $scope.codeTable = entries;
+    });
+```
 
-###User###
+###DonationService###
+DonationService Provides methods needed for taking donations and retrieving confirmation information.
+
+The `DonationService` requires the Part Id from an `Advanced Donation Part` to initialize.  The code can either be embedded in an `Advanced Donation Part` directly or anywhere on the same page as one so the Part Id can be selected.
+
+```javascript
+
+```
+
+###ImageService###
+ImageService Provides methods for getting information about images in the image gallery
+
+```javascript
+
+```
+
+###QueryService###
+QueryService Provides methods for retrieving query execution results from the CRM using calls to the BBIS REST services.
+
+```javascript
+    // Query service.
+    var querySvc = new BbisApi.QueryService();
+
+    // Note: The Query must have `Enable query for CMS REST API` enabled.
+    var queryId = 'b1f11003-ed86-4aef-a861-e3b37b8fff3f';
+
+    // Query results model
+    $scope.queryResults = [];
+
+    // Get results as an array of objects
+    querySvc.getResultsAsObjects(queryId).then(function (results) {
+        $scope.queryResults = results;
+    });
+
+    // Get results as an object with Fields: [] and Rows: []
+    querySvc.getResults(queryId).then(function (results) {
+        $scope.queryResults = results;
+    });
+```
+
+###UserService###
+UserService Provides methods for retrieving information about the currently logged in BBIS user from the CRM using calls to the BBIS REST services.
+
+```javascript
+
+```
+
 
 ##Project TODO##
 - [ ] Complete basic examples in README

@@ -1,0 +1,57 @@
+<div ng-app="QueryApp" ng-controller="QueryController">
+    <h5>Query Results</h5>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Date</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="result in queryResults">
+                <td>{{result.Name}}</td>
+                <td>{{result.Date}}</td>
+                <td>{{result.StartTime}}</td>
+                <td>{{result.EndTime}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+<script src="//dev-alumni.indiana.edu/bbis/file/js/angular-bbis-services.js"></script>
+<script type="text/javascript">
+    'use strict';
+
+    angular.module('QueryApp', ['bbis.api'])
+    .controller('QueryController', ['$scope', 'BbisApi', function ($scope, BbisApi) {
+
+        // Query service.
+        var querySvc = new BbisApi.QueryService();
+
+        // Note: The Query must have `Enable query for CMS REST API` enabled.
+        var queryId = 'b1f11003-ed86-4aef-a861-e3b37b8fff3f';
+
+        // Query results model
+        $scope.queryResults = [];
+
+        // Get results as an array of objects
+        querySvc.getResultsAsObjects(queryId).then(function (results) {
+            // Note: This Query's results column names are not JS friendly,
+            // so I'm mapping teh fields I want to a more usable format (w/o spaces).
+            // This can be avoided by specifying more friendly column names in the AdHoc Query
+            // designer (use the pencil).
+            $scope.queryResults = results.map(function (result) {
+                return {
+                    Name: result['Event name'],
+                    Date: result['Event start date'],
+                    StartTime: result['Event start time'],
+                    EndTime: result['Event end time']
+                }
+            });
+        });
+
+    }]);
+</script>

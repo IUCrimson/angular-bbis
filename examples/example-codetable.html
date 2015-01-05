@@ -1,0 +1,39 @@
+<div ng-app="CodeTableApp" ng-controller="CodeTableController">
+
+    <label>
+        <h5>Code Table</h5>
+        <select ng-model="selection"
+                ng-options="entry as entry.Description for entry in codeTable">
+            <option style="display:none" value="">--Make a Selection--</option>
+        </select>
+    </label>
+    <br />
+
+    <b>Selection</b>
+    <pre>{{selection | json}}</pre>
+
+</div>
+
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+<script src="//dev-alumni.indiana.edu/bbis/file/js/angular-bbis.js"></script>
+<script type="text/javascript">
+    'use strict';
+
+    angular.module('CodeTableApp', ['bbis.api'])
+    .controller('CodeTableController', ['$scope', 'BbisApi', function ($scope, BbisApi) {
+
+        // Service and ID for getting Code Table information.
+        var codeTableSvc = new BbisApi.CodeTableService();
+        var codeTableId = 'a19037c0-291a-4c8b-9595-c41b9d932a32';
+
+        // Models for data returned from the CodeTable service.
+        $scope.codeTable = [];
+        $scope.selection = null;
+
+        // Populate countries from the Country service.
+        codeTableSvc.getEntries(codeTableId).then(function (entries) {
+            $scope.codeTable = entries;
+        });
+
+    }]);
+</script>

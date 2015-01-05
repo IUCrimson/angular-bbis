@@ -146,7 +146,7 @@
 .factory('UserService', ['$http', 'filterFilter', function ($http, filterFilter) {
 
     /**
-    * @class BLACKBAUD.api.UserService Provides methods for retrieving information about the currently logged in BBIS user from the CRM using calls to the BBIS REST services.
+    * @class UserService Provides methods for retrieving information about the currently logged in BBIS user from the CRM using calls to the BBIS REST services.
     * @param {Object} options An object literal containing one or more of the following optional properties:
     * <ul>
     * <li><tt>url</tt> : The URL of the BBIS site from which the data will be retrieved. This value is optional when accessed from a BBIS page. The default value will be the BBIS URL of the current page.</li>
@@ -251,7 +251,7 @@
 .factory('CountryService', ['$http', function ($http) {
 
     /**
-     * @class BLACKBAUD.api.CountryService Provides methods for getting state and country information from the CRM using calls to the BBIS REST services.
+     * @class CountryService Provides methods for getting state and country information from the CRM using calls to the BBIS REST services.
      * @param {Object} options An object literal containing one or more of the following optional properties:
      * <ul>
      * <li><tt>url</tt> : The URL of the BBIS site from which the data will be retrieved. This value is optional when accessed from a BBIS page. The default value will be the BBIS URL of the current page.</li>
@@ -332,7 +332,7 @@
 .factory('CodeTableService', ['$http', function ($http) {
 
     /**
-     * @class BLACKBAUD.api.CodeTableService Provides methods for retrieving code table entries from the CRM using calls to the BBIS REST services.
+     * @class CodeTableService Provides methods for retrieving code table entries from the CRM using calls to the BBIS REST services.
      * @param {Object} options An object literal containing one or more of the following optional properties:
      * <ul>
      * <li><tt>url</tt> : The URL of the BBIS site from which the data will be retrieved. This value is optional when accessed from a BBIS page. The default value will be the BBIS URL of the current page.</li>
@@ -376,7 +376,7 @@
 .factory('ImageService', ['$http', function ($http) {
 
     /**
-     * @class BLACKBAUD.api.ImageService Provides methods for getting information about images in the image gallery
+     * @class ImageService Provides methods for getting information about images in the image gallery
      * @param {Object} options An object literal containing one or more of the following optional properties:
      * <ul>
      * <li><tt>url</tt> : The URL of the BBIS site from which the data will be retrieved. This value is optional when accessed from a BBIS page. The default value will be the BBIS URL of the current page.</li>
@@ -459,7 +459,7 @@
 .factory('DonationService', ['$http', function ($http) {
 
     /**
-    * @class BLACKBAUD.api.DonationService Provides methods needed for taking donations and retrieving confirmation information.
+    * @class DonationService Provides methods needed for taking donations and retrieving confirmation information.
     * @param {Integer} partId The Id of an Advanced Donation Form part that will be used as a context for all method calls.
     * @param {Object} options An object literal containing one or more of the following optional properties:
     * <ul>

@@ -1,4 +1,4 @@
-<div ng-app="CodeTableApp" ng-controller="CodeTableController">
+<div ng-app="CountryStateApp" ng-controller="CountryStateController">
 
     <label>
         <h5>Country</h5>
@@ -33,8 +33,8 @@
 <script type="text/javascript">
     'use strict';
 
-    angular.module('CodeTableApp', ['bbis.api'])
-    .controller('CodeTableController', ['$scope', 'BbisApi', function ($scope, BbisApi) {
+    angular.module('CountryStateApp', ['bbis.api'])
+    .controller('CountryStateController', ['$scope', 'BbisApi', function ($scope, BbisApi) {
 
         // Service for getting Country and State information.
         var countrySvc = new BbisApi.CountryService();
