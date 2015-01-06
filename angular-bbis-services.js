@@ -1,5 +1,33 @@
 ﻿angular.module('bbis.api', [])
 
+.config(function ($provide) {
+    /**
+     * Extends promises to have the .success() and .error() shortcuts
+     * so that wrappers/custom methods can be called in the same way as the
+     * methods returning $http calls directly.
+     * 
+     * Credit to @naturalethic at stackoverflow.
+     * http://stackoverflow.com/questions/16797209/how-can-i-extend-q-promise-in-angularjs-with-a-succes-and-error
+     */
+    $provide.decorator('$q', function ($delegate) {
+        var defer = $delegate.defer;
+        $delegate.defer = function () {
+            var deferred = defer();
+            deferred.promise.success = function (fn) {
+                deferred.promise.then(fn);
+                return deferred.promise;
+            };
+            deferred.promise.error = function (fn) {
+                deferred.promise.then(null, fn);
+                return deferred.promise;
+            };
+            return deferred;
+        };
+        return $delegate;
+    });
+
+})
+
 .factory('BbisApi', ['QueryService', 'UserService', 'CountryService', 'CodeTableService', 'ImageService', 'DonationService', function (QueryService, UserService, CountryService, CodeTableService, ImageService, DonationService) {
     /**
     * @class BbisApi wraps the other services so that they can be included at the same time instead of injecting them each individually.  
@@ -15,7 +43,7 @@
     }
 }])
 
-.factory('QueryService', ['$http', function ($http) {
+.factory('QueryService', ['$http', '$q', function ($http, $q) {
 
     /**
     * @class QueryService Provides methods for retrieving query execution results from the CRM using calls to the BBIS REST services.
@@ -119,10 +147,12 @@
          * </ul>            
         */
         getResultsAsObjects: function (id, columnFilter) {
-            return this.getResults(id, columnFilter).then(function (results) {
+            var deferred = $q.defer();
+
+            this.getResults(id, columnFilter).success(function (results) {
                 var objects = [];
-                var fields = results.data.Fields;
-                var rows = results.data.Rows;
+                var fields = results.Fields;
+                var rows = results.Rows;
 
                 angular.forEach(rows, function (row) {
                     var obj = {};
@@ -133,15 +163,17 @@
                     objects.push(obj);
                 });
 
-                return objects;
+                deferred.resolve(objects);
             });
+
+            return deferred.promise;
         }
     };
 
     return QueryService;
 }])
 
-.factory('UserService', ['$http', 'filterFilter', function ($http, filterFilter) {
+.factory('UserService', ['$http', 'filterFilter', '$q', function ($http, filterFilter, $q) {
 
     /**
     * @class UserService Provides methods for retrieving information about the currently logged in BBIS user from the CRM using calls to the BBIS REST services.
@@ -212,9 +244,9 @@
          * The resulting format is suitable to be passed as the Donor object in a DonationQuery call.     
         */
         getDonorProfile: function () {
-            return this.getProfile().then(function (response) {
-                var profile = response.data;
+            var deferred = $q.defer();
 
+            this.getProfile().success(function (profile) {
                 var user = {
                     Title: profile.Title,
                     FirstName: profile.FirstName,
@@ -238,8 +270,10 @@
                     user.Address.Country = primaryAddress.Country || 'United States';
                 }
 
-                return user;
+                deferred.resolve(user);
             });
+
+            return deferred.promise;
         }
     };
 
@@ -296,7 +330,6 @@
          */
         getStates: function (countryId) {
             var url = this.baseUrl + "/Country/" + countryId + "/State";
-
             return $http.get(url);
         },
 
@@ -313,7 +346,6 @@
          */
         getAddressCaptions: function (countryId) {
             var url = this.baseUrl + "/Country/" + countryId + "/AddressCaptions";
-
             return $http.get(url);
         }
     };
@@ -355,7 +387,6 @@
          */
         getEntries: function (codeTableId) {
             var url = this.baseUrl + "/CodeTable/" + codeTableId;
-
             return $http.get(url);
         }
     };
@@ -400,7 +431,6 @@
          */
         getImagesByFolderGUID: function (folderGUID) {
             var url = this.baseUrl + "/Images?FolderGUID=" + encodeURIComponent(folderGUID);
-
             return $http.get(url);
         },
 
@@ -416,7 +446,6 @@
          */
         getImagesByTag: function (tag) {
             var url = this.baseUrl + "/Images?Tag=" + encodeURIComponent(tag);
-
             return $http.get(url);
         },
 
@@ -432,7 +461,6 @@
          */
         getImagesByFolder: function (folderPath) {
             var url = this.baseUrl + "/Images/" + encodeURIComponent(folderPath);
-
             return $http.get(url);
         }
     };
@@ -440,7 +468,7 @@
     return ImageService;
 }])
 
-.factory('DonationService', ['$http', function ($http) {
+.factory('DonationService', ['$http', '$q', function ($http, $q) {
 
     /**
     * @class DonationService Provides methods needed for taking donations and retrieving confirmation information.
@@ -525,16 +553,21 @@
         * from the specified donation merged in.
         */
         getDonationConfirmationHtml: function (id) {
+            var deferred = $q.defer();
             var url = this.baseUrl + '/' + id + '/ConfirmationHtml';
 
-            return $http.get(url, { responseType: 'text/plain' }).then(function (result) {
+            $http.get(url).success(function (result) {
                 // Has a buch of \t, \n and \" 
-                return result
-                    .replace(/\\n/g, '')                    // \n
-                    .replace(/\\t/g, '')                    // \t
-                    .replace(/\\/g, '')                     // \ in front of "s
-                    .substring(1, result.length - 1);       // 1st and last "
+                var fixedHtml = result
+                                .replace(/\\n/g, '')                    // \n
+                                .replace(/\\t/g, '')                    // \t
+                                .replace(/\\/g, '')                     // \ in front of "s
+                                .substring(1, result.length - 1);       // 1st and last "
+
+                deferred.resolve(fixedHtml);
             });
+
+            return deferred.promise;
         }
     };
 

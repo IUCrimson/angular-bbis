@@ -135,7 +135,7 @@ QueryService Provides methods for retrieving query execution results from the CR
     $scope.queryResults = [];
 
     // Get results as an array of objects
-    querySvc.getResultsAsObjects(queryId).then(function (results) {
+    querySvc.getResultsAsObjects(queryId).success(function (results) {
         $scope.queryResults = results;
     });
 
