@@ -1,6 +1,6 @@
 ﻿angular.module('bbis.api', [])
 
-.config(function ($provide) {
+.config(['$provide', function ($provide) {
     /**
      * Extends promises to have the .success() and .error() shortcuts
      * so that wrappers/custom methods can be called in the same way as the
@@ -9,7 +9,7 @@
      * Credit to @naturalethic at stackoverflow.
      * http://stackoverflow.com/questions/16797209/how-can-i-extend-q-promise-in-angularjs-with-a-succes-and-error
      */
-    $provide.decorator('$q', function ($delegate) {
+    $provide.decorator('$q', ['$delegate', function ($delegate) {
         var defer = $delegate.defer;
         $delegate.defer = function () {
             var deferred = defer();
@@ -24,9 +24,8 @@
             return deferred;
         };
         return $delegate;
-    });
-
-})
+    }]);
+}])
 
 .factory('BbisApi', ['QueryService', 'UserService', 'CountryService', 'CodeTableService', 'ImageService', 'DonationService', function (QueryService, UserService, CountryService, CodeTableService, ImageService, DonationService) {
     /**
