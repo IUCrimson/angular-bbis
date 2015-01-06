@@ -166,6 +166,51 @@
             });
 
             return deferred.promise;
+        },
+
+        /**
+         * Returns the results of many queries as a single set.  Useful if filtering on the same column many times.
+         * 
+         * For example, calling the default getResults with two filters on the 'System ID' column will yield only 1 result:
+         *  getResults(queryListId, [ { 'System ID': 123 }, { 'System ID': 456 } ] yeilds only the record matching 'System ID' 123.
+         * 
+         * Likely want both records.
+         *  getManyAsObjects(queryListId, [ { 'System ID': 123 }, { 'System ID': 456 } ] yeilds both 123 and 456 records.
+         * 
+         * The filters do not need to be on the same column.
+         *  getManyAsObjects(queryListId, [ { 'System ID': 123 }, { 'Name': 'MyFund' } ] yeilds both System ID = 123 and Name = MyFund records.
+         * 
+         * @param {String} queryId The Id of a query whose results should be returned.
+         * @param {Array} filters An array of the filters to filter the results to rows that contain the
+         * specified value in the specified column. When specifying a column, use the name that is found
+         * in the query response. Depending on the type of column being filtered, the results may filter to rows
+         * that exactly match the specified value instead of those that contain the specified value. Summary
+         * columns such as MAX, MIN, and COUNT cannot be used as filters and will be ignored. The array should
+         * contain objects with the following properties:
+         * <ul>
+         * <li><tt>columnName</tt> : The name of the column that should be used to filter the results.</li>
+         * <li><tt>value</tt> : The value that the specified column should be filtered by.</li>
+         * </ul>  
+         */
+        getManyAsObjects: function (id, columnFilters) {
+            var self = this;
+            var deferred = $q.defer();
+
+            var queries = $.map(columnFilters, function (filter) {
+                return self.getResultsAsObjects(id, [filter]);
+            });
+
+            $q.all(queries).then(function (results) {
+                var combinedResults = [];
+
+                angular.forEach(results, function (objects) {
+                    combinedResults = combinedResults.concat(objects);
+                });
+
+                deferred.resolve(combinedResults);
+            });
+
+            return deferred.promise;
         }
     };
 
