@@ -65,6 +65,22 @@
         this.baseUrl = url + "WebApi";
     };
 
+    /**
+     * Attempts to infer the type of the field and returns the cast type.
+     * @param {string} A field value returned as a string.
+     */
+    function setType(variable) {        
+        if (variable === 'True' || variable === 'False') {
+            variable = (variable === 'True');
+        } else if ($.isNumeric(variable)) {
+            variable = parseFloat(variable);
+        } else if (Date.parse(variable)) {
+            variable = new Date(variable);
+        }
+
+        return variable;
+    }
+
     QueryService.prototype = {
 
         /**
@@ -144,8 +160,9 @@
          * <li><tt>columnName</tt> : The name of the column that should be used to filter the results.</li>
          * <li><tt>value</tt> : The value that the specified column should be filtered by.</li>
          * </ul>            
-        */
-        getResultsAsObjects: function (id, columnFilter) {
+         * @param {Boolean} enableTypeConversion Default: true.  If set to false, all data will be returned as a string.
+         */
+        getResultsAsObjects: function (id, columnFilter, enableTypeConversion) {
             var deferred = $q.defer();
 
             this.getResults(id, columnFilter).success(function (results) {
@@ -156,8 +173,11 @@
                 angular.forEach(rows, function (row) {
                     var obj = {};
 
-                    for (var i = 0, j = row.Values.length; i < j; i++)
-                        obj[fields[i].Caption] = row.Values[i];
+                    for (var i = 0, j = row.Values.length; i < j; i++) {
+                        obj[fields[i].Caption] = enableTypeConversion
+                            ? row.values[i]
+                            : setType(row.Values[i]);
+                    }
 
                     objects.push(obj);
                 });
