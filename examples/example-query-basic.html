@@ -1,0 +1,22 @@
+<div ng-app="QueryApp" ng-controller="QueryController">
+    <b>Results</b>
+    <pre>{{results | json}}</pre>
+</div>
+
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+<script src="//dev-alumni.indiana.edu/bbis/file/js/angular-bbis-services.js"></script>
+<script type="text/javascript">
+    
+    angular.module('QueryApp', ['bbis.api'])
+        .controller('QueryController', ['$scope', 'BbisApi', function ($scope, BbisApi) {
+            var querySvc = new BbisApi.QueryService(),
+                queryId = BBI.Methods.getQueryVariable('queryId'); 
+
+            $scope.results = [];
+        
+            querySvc.getResultsAsObjects(queryId).success(function (results) {
+                $scope.results = results;
+            });        
+        }]);
+
+</script>
